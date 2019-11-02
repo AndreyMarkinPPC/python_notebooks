@@ -19,7 +19,7 @@ def get_colour_name(rgb):
         min_colours[(rd + gd + bd)] = name
     return min_colours[min(min_colours.keys())]
 
-def get_dominant_colours(path, threshold = 0.001):
+def get_dominant_colours(path, threshold = 0.001, names = False):
     img = cv2.imread(path)
     height, width, _ = np.shape(img)
 
@@ -34,11 +34,12 @@ def get_dominant_colours(path, threshold = 0.001):
             .reset_index(name='count').drop_duplicates()
     df["prop"] = df["count"] / sum(df["count"])
     df = df.query("prop > %f" %(threshold))
-    df["colour"] = [get_colour_name([c[0], c[1], c[2]]) for c in df[["r", "g", "b"]].values]
-    df = df.groupby(["colour"])["prop"].sum()\
-            .sort_values(ascending=False)\
-            .reset_index(name="value")
-    df["prop"] = df["value"] / sum(df["value"])
+    # if names:
+        # df["colour"] = [get_colour_name([c[0], c[1], c[2]]) for c in df[["r", "g", "b"]].values]
+        # df = df.groupby(["colour"])["prop"].sum()\
+        #         .sort_values(ascending=False)\
+        #         .reset_index(name="value")
+        # df["prop"] = df["value"] / sum(df["value"])
     return df
 
 
