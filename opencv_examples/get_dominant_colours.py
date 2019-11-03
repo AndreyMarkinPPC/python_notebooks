@@ -48,7 +48,8 @@ if os.path.isfile(path):
 elif os.path.isdir(path):
     print("running on a folder...")
     files = os.listdir(path)
-    colours = [get_dominant_colours(os.path.join(path, file), args.threshold) for file in files]
+    # TODO: Add check whether color file already exists
+    colours = [get_dominant_colours(os.path.join(path, file), args.threshold) for file in files if file.endswith(".jpg") if os.path.getsize(os.path.join(path, file)) > 0]
     pd.concat(colours).to_csv(path + "/colours.csv", index = False)
 
 # [get_colour_name([c.r[0], c.g[0], c.g[0]]) for c in colours]
