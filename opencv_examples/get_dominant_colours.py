@@ -47,9 +47,19 @@ if os.path.isfile(path):
     colours.to_csv(path.split(".")[0] + ".csv", index = False)
 elif os.path.isdir(path):
     print("running on a folder...")
-    files = os.listdir(path)
-    # TODO: Add check whether color file already exists
-    colours = [get_dominant_colours(os.path.join(path, file), args.threshold) for file in files if file.endswith(".jpg") if os.path.getsize(os.path.join(path, file)) > 0]
-    pd.concat(colours).to_csv(path + "/colours.csv", index = False)
+    input_dir = os.listdir(path)
+    print(input_dir)
+    for files_ in input_dir:
+        files = os.listdir(os.path.join(path, files_))
+        if "colours.csv" in files:
+            print("colors have been detected!")
+        elif "videos.csv" in files:
+            print("not a valid image folder")
+        else:
+            colours = [get_dominant_colours(os.path.join(path, files_, file), args.threshold)\
+                       for file in files\
+                       if file.endswith(".jpg")\
+                       if os.path.getsize(os.path.join(path, files_, file)) > 0]
+            pd.concat(colours).to_csv(path + "/" + files_ +  "/colours.csv", index = False)
 
 # [get_colour_name([c.r[0], c.g[0], c.g[0]]) for c in colours]
