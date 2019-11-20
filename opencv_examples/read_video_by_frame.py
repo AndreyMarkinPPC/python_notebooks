@@ -4,6 +4,8 @@ import pafy
 import argparse
 import pandas as pd
 import os
+import time 
+from tqdm import tqdm
 
 # parser = argparse.ArgumentParser()
 # 
@@ -12,14 +14,21 @@ import os
 # print(args)
 if True:
     data = pd.read_csv("videos/input/videos.csv")
-    for video in data["ytid"]:
-        url = 'https://youtu.be/%s' %(video)
+    i = 1
+    for video in tqdm(data["ytid"]):
+        if i % 5 == 0:
+            time.sleep(5)
+        if i % 15 == 0:
+            time.sleep(5)
+        
+        url = 'https://www.youtube.com/watch?v=%s' %(video)
         # TODO: Add check for folder with no images downloaded
         if os.path.isdir("videos/%s/" %(video)):
-            print("%s is already fetched, skipping..." %(video))
+            # print("%s is already fetched, skipping..." %(video))
+            continue
         else:
             try:
-                print("trying video %s..." %(video))
+                # print("trying video %s..." %(video))
                 try:
                     vPafy = pafy.new(url)
                     try:
@@ -35,7 +44,7 @@ if True:
                                 # print("multiplier:", multiplier)
                                 # print("fps :", cap.get(cv2.CAP_PROP_FPS))
                                 ret = True
-                                print("running for video %s" %(video))
+                                # print("running for video %s" %(video))
                                 os.mkdir("videos/%s/" %(video))
                                 while (ret):
                                     frameId = int(round(cap.get(1)))
@@ -48,8 +57,11 @@ if True:
                                         else:
                                             cv2.imwrite("videos/%s/frame_%d.jpg" % (str(video), int(frameId / multiplier)), frame)
                     except OSError as error:
-                        print(error)
+                        # print(error)
+                        continue
                 except OSError as error:
-                    print(error)
+                    # print(error)
+                    continue
             except OSError as error:
-                print(error)
+                # print(error)
+                continue
